@@ -3,7 +3,7 @@ var webpack = require("webpack")
 var ExtractTextPlugin = require("extract-text-webpack-plugin")
 module.exports = {
     entry: [
-        './index.js'
+        './src/main.jsx'
     ],
     output: {
         path: __dirname + '/dist/',
@@ -18,11 +18,11 @@ module.exports = {
     },
     module: {
         loaders:[
-        { test: /\.js$/, loader: 'babel-loader', exclude:/node_modules/, query:{presets:['es2015']}},
-        // { test: /\.json$/, loader: 'json'},
+        { test: /\.jsx$/, loader: 'babel-loader'},
+        { test: /\.json$/, loader: 'json'},
         // // { test: /\.pug$/, loader: 'pug' },
-        // { test: /\.scss$/, loader: ExtractTextPlugin.extract('style-loader','css!sass')},
-        // { test: /\.svg$/, loader: 'file-loader'} 
+        { test: /\.scss$/, loader: ExtractTextPlugin.extract('style-loader','css!sass')},
+        { test: /\.svg$/, loader: 'file-loader'} 
     ]},
     plugins: [
         new webpack.HotModuleReplacementPlugin(),
