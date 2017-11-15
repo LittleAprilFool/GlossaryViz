@@ -1,4 +1,4 @@
-Visualizing the glossary table after computing science textbook
+# Visualizing the glossary table after computing science textbook
 
 - visualize the relationship between technical terminologies in the glossary table from computing science textbooks
 - use arc diagram/network maps
