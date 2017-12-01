@@ -1,6 +1,7 @@
 const path = require('path')
 var webpack = require("webpack")
 var ExtractTextPlugin = require("extract-text-webpack-plugin")
+var UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 
 module.exports = {

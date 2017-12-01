@@ -14,7 +14,7 @@ class GlossarySpider(scrapy.Spider):
     def parse(self, response):
         for glossary in response.css('p.glossary_item'):
           yield{
-            'term': glossary.css('span.glossary_term::text').extract_first(),
+            'term': glossary.css('span.glossary_term::text').extract_first()[:-1],
             'definition': glossary.css('span.glossary_definition::text').extract_first(),
           }
         
