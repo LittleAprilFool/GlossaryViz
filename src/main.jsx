@@ -5,8 +5,8 @@ import {render} from 'react-dom'
 // import reducer from './reducers'
 import App from './App'
 import './scss/main.scss'
-import node from './json/node-middle.json'
-import link from './json/link-middle.json'
+import node from './json/node-chapter22.json'
+import link from './json/link-chapter22.json'
 
 // const store = createStore(reducers)
 

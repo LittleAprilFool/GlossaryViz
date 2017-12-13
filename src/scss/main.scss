@@ -5,7 +5,8 @@
 body{
   font-family: 'Crimson Text', serif;
   height: 100%;
-  overflow: hidden;
+  overflow: scroll;
+//  overflow: hidden;
 }
 
 #termTitle {
@@ -27,10 +28,10 @@ body{
   position: absolute;
   margin-top: 20px;
   height: 120px;
-  width: 800px;
+  width: 600px;
   margin-left: 30px;
   margin-right: 30px;
-  left: 400px;
+  left: 800px;
   top: 70px;
   z-index: 1;
 }
@@ -39,8 +40,8 @@ body{
  position: absolute;
  right: 0px;
  text-align: center; 
- z-index: 0;
- top: 180px;
+ z-index: -1;
+ top: 0px;
 }
 
 #SearchBox p {
@@ -66,7 +67,8 @@ body{
 #SearchBox {
   position: absolute;
   width: 400px;
-  left: 500px;
+  left: 800px;
+  z-index: 1;
 }
 
 .Textbook {
@@ -77,4 +79,9 @@ body{
   padding-left: 5px;
   padding-right: 5px;
   border-right: 1px solid #aaa;
+}
+
+.highlight_term {
+  background: orange;
+  color: black;
 }
