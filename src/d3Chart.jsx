@@ -30,7 +30,7 @@ ns.update = function(el, props, data, updt) {
   this._drawLinks(el, props, data, updt)
   this._drawPoints(el, props, data, updt)
   this._drawList(el, props, data, updt)
-  // this._drawBrush(el, props, data, updt)
+  this._drawBrush(el, props, data, updt)
 }
 ns._drawBrush = function(el, props, data, updt) {
   function brushed() {
@@ -51,22 +51,22 @@ ns._drawBrush = function(el, props, data, updt) {
   svg.append('g')
     .attr('class', 'brush-container') 
     .call(brush)
-    .call(brush.move, [10, 100]);
+    .call(brush.move, [10,200]);
 }
 
 ns._predraw = function(data) {
-  var currenty = 20
+  var currentx = 20
   var innergap = 20
   var outtergap = 20
   var widthbase = 3
-  var currentx = 20
+  var currenty = 420
   var node
   for (var i=0; i < data.node.length; ++i) {
     node = data.node[i]
     node.x = currentx  
     node.y = currenty
     node.r = 5 + Math.log10(node.number) * widthbase
-    currenty = node.y + innergap
+    currentx = node.x + innergap
   }
 }
 
@@ -76,15 +76,15 @@ ns._drawList = function(el, props, data, updt) {
   // var color = d3.scaleOrdinal(d3ScaleChromatic.schemeBlues[9])
   var color = d3.scaleSequential(d3ScaleChromatic.interpolateGnBu);
   function textTransform(node){
-    return ("rotate(-45 " + (node.x + 20) + " " + (node.y) +")")
+    return ("rotate(45 " + (node.x - 10) + " " + (node.y + 20) +")")
   }
   var text = svg.append('g')
     .attr('class', 'text-container')
     .selectAll('.text-container')
     .data(data.node)
     .enter().append('text')
-    .attr('x', function(d){return d.x +20})
-    .attr('y', function(d){return d.y})
+    .attr('x', function(d){return d.x - 10})
+    .attr('y', function(d){return d.y + 20})
     .attr("transform", function(d,i) { return textTransform(d); })
     .attr("font-size", "12px")
     .text(function(d){return d.term})
@@ -98,7 +98,7 @@ ns._drawLinks = function(el, props, data, updt) {
   var radians = d3.scaleLinear()
   .range([Math.PI / 2, 3 * Math.PI / 2])
 
-  var currentx = 20
+  var currenty = 420
   // add links
   var link = svg.append('g')
     .attr('class', 'link')
@@ -107,27 +107,30 @@ ns._drawLinks = function(el, props, data, updt) {
     .enter().append('path')
     .attr('class', function(d){return 'alink ' + d.source.term.replace(' ','_')})
     .attr('d', function(d){
-      var radius = Math.abs(d.target.y - d.source.y) / 2
+      var radius = Math.abs(d.target.x - d.source.x) / 2
       var arc = d3.arc()
         .innerRadius(radius)
         .outerRadius(radius)
-        .startAngle(0)
-        .endAngle(Math.PI);
-      return arc();
+        .startAngle(-Math.PI / 2)
+        .endAngle(Math.PI / 2);
+      return arc(); 
     })
-    .attr('stroke',function(d){
-      // var radius = Math.abs(d.target.y - d.source.y)
-      // if (d.target.y > props.height) 
-      //   return "#fff"
-      // else
-      //   return "#ddd"
-      return "#ddd"
+    .attr('stroke',function(d) {
+      if (d.target.x > props.width)
+        return "#eee"
+      else
+        return "#eee"
     })
-    .attr('stroke-width', 2)
+    .attr('stroke-width', function(d){
+      if (d.target.x > props.width)
+        return 1
+      else
+        return 4
+    })
     .attr('transform', function(d) {
-      var radius = Math.abs(d.target.y - d.source.y) / 2
-      var xshift = currentx
-      var yshift = d.source.y + radius
+      var radius = Math.abs(d.target.x - d.source.x) / 2
+      var xshift = d.source.x + radius
+      var yshift = currenty
       return 'translate(' + xshift + ',' + yshift + ')'
     })
     .on("mouseover", (d)=>{
@@ -189,7 +192,7 @@ ns._drawPoints = function (el, props, data, updt) {
 }
 
 ns.highlight = function (term) {
-  var allterm = d3.selectAll('.blockterm').style('fill', '#ddd')
+  var allterm = d3.selectAll('.blockterm').style('fill', '#eee')
   var related = d3.selectAll('.blockterm').filter('.'+term.replace(' ', '_')).style('fill', 'orange')
   var relatedlink = d3.selectAll('.alink').filter('.'+ term.replace(' ', '_')).style('stroke', 'orange')
 }
@@ -199,7 +202,7 @@ ns.resethighlight = function () {
   var allterm = d3.selectAll('.blockterm').style('fill', function(d){
     return color(d.section_int)
   })
-  var relatedlink = d3.selectAll('.alink').style('stroke', '#ddd')
+  var relatedlink = d3.selectAll('.alink').style('stroke', '#eee')
 }
 
 ns.matchhighlight = function (el, term) {
@@ -209,7 +212,7 @@ ns.matchhighlight = function (el, term) {
   }
   else {
     this.selected = 2
-    var allterm = d3.selectAll('.blockterm').style('fill', '#ddd')
+    var allterm = d3.selectAll('.blockterm').style('fill', '#eee')
     var test = d3.selectAll('.blockterm')
     .filter(function(d) { 
       const reg = new RegExp('^' + term)

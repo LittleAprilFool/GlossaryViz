@@ -28,10 +28,10 @@ body{
   position: absolute;
   margin-top: 20px;
   height: 120px;
-  width: 600px;
+  width: 800px;
   margin-left: 30px;
   margin-right: 30px;
-  left: 800px;
+  left: 400px;
   top: 70px;
   z-index: 1;
 }
@@ -40,8 +40,8 @@ body{
  position: absolute;
  right: 0px;
  text-align: center; 
- z-index: -1;
- top: 0px;
+ z-index: 0;
+ top: 180px;
 }
 
 #SearchBox p {
@@ -67,8 +67,7 @@ body{
 #SearchBox {
   position: absolute;
   width: 400px;
-  left: 800px;
-  z-index: 1;
+  left: 500px;
 }
 
 .Textbook {
