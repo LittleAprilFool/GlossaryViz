@@ -10,13 +10,13 @@ export default class App extends React.Component {
     this.state = {
       termTitle: "Glossary Viz",
       searchTerm: "",
-      locked: false
+      locked: false,
+      resizeCount: 0
     }
     this.changeTerm = this.changeTerm.bind(this)
     this.changeSearch = this.changeSearch.bind(this)
     this.handleClick = this.handleClick.bind(this)
-    this.width = window.innerWidth * 0.6
-    this.height = window.innerHeight - 120
+    this.changeCount = this.changeCount.bind(this)
   }
   changeTerm(term) {
     this.setState({
@@ -33,8 +33,17 @@ export default class App extends React.Component {
       searchTerm: term
     })
   }
+  changeCount(){
+    this.setState({
+      resizeCount: this.state.resizeCount +1
+    })
+  }
   componentDidMount() {
     document.onclick = this.handleClick
+    window.onresize = this.changeCount
+  }
+  componentWillUnmount() {
+    window.onresize = null
   }
   handleClick() {
     // this.setState({
@@ -47,7 +56,7 @@ export default class App extends React.Component {
         <SearchBox onChange={this.changeSearch} />
         <Textbook title = {this.state} onChange={this.changeTerm}/>
         <Terminology title = {this.state} />
-        <Arc data = {this.props.data} width ={this.width} height = {this.height} onChange={this.changeTerm} title={this.state}/>
+        <Arc data = {this.props.data} onChange={this.changeTerm} title={this.state} key={this.state.resizeCount}/>
       </div>
     )
   }

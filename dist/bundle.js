@@ -61,7 +61,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "ee8fe8e9d973e92806ed"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "2dd69f78e1ba79c15741"; // eslint-disable-line no-unused-vars
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule; // eslint-disable-line no-unused-vars
@@ -28262,13 +28262,13 @@ var App = function (_React$Component) {
     _this.state = {
       termTitle: "Glossary Viz",
       searchTerm: "",
-      locked: false
+      locked: false,
+      resizeCount: 0
     };
     _this.changeTerm = _this.changeTerm.bind(_this);
     _this.changeSearch = _this.changeSearch.bind(_this);
     _this.handleClick = _this.handleClick.bind(_this);
-    _this.width = window.innerWidth * 0.6;
-    _this.height = window.innerHeight - 120;
+    _this.changeCount = _this.changeCount.bind(_this);
     return _this;
   }
 
@@ -28294,9 +28294,22 @@ var App = function (_React$Component) {
       });
     }
   }, {
+    key: 'changeCount',
+    value: function changeCount() {
+      this.setState({
+        resizeCount: this.state.resizeCount + 1
+      });
+    }
+  }, {
     key: 'componentDidMount',
     value: function componentDidMount() {
       document.onclick = this.handleClick;
+      window.onresize = this.changeCount;
+    }
+  }, {
+    key: 'componentWillUnmount',
+    value: function componentWillUnmount() {
+      window.onresize = null;
     }
   }, {
     key: 'handleClick',
@@ -28314,7 +28327,7 @@ var App = function (_React$Component) {
         _react2.default.createElement(_Searchbox2.default, { onChange: this.changeSearch }),
         _react2.default.createElement(_Textbook2.default, { title: this.state, onChange: this.changeTerm }),
         _react2.default.createElement(_Terminology2.default, { title: this.state }),
-        _react2.default.createElement(_Arc2.default, { data: this.props.data, width: this.width, height: this.height, onChange: this.changeTerm, title: this.state })
+        _react2.default.createElement(_Arc2.default, { data: this.props.data, onChange: this.changeTerm, title: this.state, key: this.state.resizeCount })
       );
     }
   }]);
@@ -28366,6 +28379,8 @@ var Arc = function (_React$Component) {
     var _this = _possibleConstructorReturn(this, (Arc.__proto__ || Object.getPrototypeOf(Arc)).call(this, props));
 
     _this.changeState = _this.changeState.bind(_this);
+    _this.width = window.innerWidth * 0.6;
+    _this.height = window.innerHeight - 120;
     return _this;
   }
 
@@ -28373,7 +28388,9 @@ var Arc = function (_React$Component) {
     key: 'componentDidMount',
     value: function componentDidMount() {
       var el = _reactDom2.default.findDOMNode(this);
-      _d3Chart2.default.create(el, { width: this.props.width, height: this.props.height }, this.props.data, this.changeState);
+      this.width = window.innerWidth * 0.6;
+      this.height = window.innerHeight - 120;
+      _d3Chart2.default.create(el, { width: this.width, height: this.height }, this.props.data, this.changeState);
     }
   }, {
     key: 'componentWillReceiveProps',
