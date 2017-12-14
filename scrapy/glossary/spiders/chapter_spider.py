@@ -32,7 +32,7 @@ class ChapterSpider(scrapy.Spider):
         }
         for section in response.css('ul.contents li'):
             sectionUrl = section.css('a::attr(href)').extract_first()
-        yield response.follow(sectionUrl, callback = lambda r: self.parseSection(r, chapterId, chapterTitle))
+            yield response.follow(sectionUrl, callback = lambda r: self.parseSection(r, chapterId, chapterTitle))
 
     def parseSection(self, response, chapterId, chapterTitle):
         yield{

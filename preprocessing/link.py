@@ -13,7 +13,7 @@ def calculateLink(node):
 
 
 def write_file():
-  obj = open('link-middle.json', 'wb')
+  obj = open('link-chapter22.json', 'wb')
   json.dump(linkList, obj)
   obj.close
 
@@ -23,4 +23,4 @@ def start(file):
     calculateLink(node)
     write_file()
 
-start('node-middle.json')
+start('node-chapter22.json')

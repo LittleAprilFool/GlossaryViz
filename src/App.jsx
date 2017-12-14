@@ -9,14 +9,21 @@ export default class App extends React.Component {
     super(props)
     this.state = {
       termTitle: "Glossary Viz",
-      searchTerm: ""
+      searchTerm: "",
+      locked: false
     }
     this.changeTerm = this.changeTerm.bind(this)
     this.changeSearch = this.changeSearch.bind(this)
+    this.handleClick = this.handleClick.bind(this)
   }
   changeTerm(term) {
     this.setState({
       termTitle: term
+    })
+  }
+  changeLocked() {
+    this.setState({
+      locked: !this.state.locked
     })
   }
   changeSearch(term) {
@@ -24,13 +31,21 @@ export default class App extends React.Component {
       searchTerm: term
     })
   }
+  componentDidMount() {
+    document.onclick = this.handleClick
+  }
+  handleClick() {
+    // this.setState({
+    //   locked: false
+    // })
+  }
   render () {
     return (
       <div className="App">
         <SearchBox onChange={this.changeSearch} />
-        <Textbook title = {this.state}/>
+        <Textbook title = {this.state} onChange={this.changeTerm}/>
         <Terminology title = {this.state} />
-        <Arc data = {this.props.data} width = '810' height = '550' onChange={this.changeTerm} searchTitle={this.state}/>
+        <Arc data = {this.props.data} width = '800' height = '600' onChange={this.changeTerm} title={this.state}/>
       </div>
     )
   }

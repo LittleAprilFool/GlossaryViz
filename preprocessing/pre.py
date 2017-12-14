@@ -27,8 +27,8 @@ def calculate_node(chapter, glossary):
         nodeList.append(node)
 
 def write_file():
-  obj = open('node-middle.json', 'wb')
-  json.dump(nodeList[:100], obj)
+  obj = open('node-chapter22.json', 'wb')
+  json.dump(nodeList, obj)
   obj.close
 
 def order(chapter):
@@ -50,4 +50,4 @@ def start(file1, file2):
       calculate_node(newchapter, glossary)
       write_file()
 
-start('chapter.json','glossary.json')
+start('chapter22.json','glossary.json')
