@@ -61,7 +61,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "50f0f3c9554d9d7a3011"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "c48bcd43138929dbf1a7"; // eslint-disable-line no-unused-vars
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule; // eslint-disable-line no-unused-vars
@@ -28267,6 +28267,7 @@ var App = function (_React$Component) {
     _this.changeTerm = _this.changeTerm.bind(_this);
     _this.changeSearch = _this.changeSearch.bind(_this);
     _this.handleClick = _this.handleClick.bind(_this);
+    _this.width = window.innerWidth * 0.6;
     return _this;
   }
 
@@ -28312,7 +28313,7 @@ var App = function (_React$Component) {
         _react2.default.createElement(_Searchbox2.default, { onChange: this.changeSearch }),
         _react2.default.createElement(_Textbook2.default, { title: this.state, onChange: this.changeTerm }),
         _react2.default.createElement(_Terminology2.default, { title: this.state }),
-        _react2.default.createElement(_Arc2.default, { data: this.props.data, width: '800', height: '600', onChange: this.changeTerm, title: this.state })
+        _react2.default.createElement(_Arc2.default, { data: this.props.data, width: this.width, height: '600', onChange: this.changeTerm, title: this.state })
       );
     }
   }]);
@@ -28459,8 +28460,8 @@ ns._drawBrush = function (el, props, data, updt) {
   var x2 = d3.scaleTime().range([0, brushlength]);
   var color = d3.scaleOrdinal(d3ScaleChromatic.schemeDark2);
   //var color = d3.scaleOrdinal(d3ScaleChromatic.schemeYlGnBu[9])
-  var brushlength = 800;
-  var brushright = 348;
+  var brushlength = props.width;
+  var brushright = 0.435 * props.width;
   var areaScale = brushlength / this.totallength;
   var area = svg.append('g').attr('class', 'area').selectAll('rect').data(data.node).enter().append('rect').attr('x', function (d) {
     return d.x * areaScale;
