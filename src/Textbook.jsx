@@ -28,7 +28,7 @@ export default class Textbook extends React.Component {
   markAll() {
     this.ins.unmark()
     glsjson.forEach( e =>{
-      var result = this.ins.mark(e.term, {"separateWordSearch":false, "accuracy": "exactly", "className":"mark-"+e.term})
+      var result = this.ins.mark(e.term, {"separateWordSearch":false, "accuracy": "exactly", "className":"mark-"+e.term.replace(' ','_')})
     })
   }
   handleClick(e) {
@@ -53,7 +53,7 @@ export default class Textbook extends React.Component {
         })
       }
       else{
-        var selectTerm = document.querySelectorAll(".mark-"+nextProps.title.termTitle)
+        var selectTerm = document.querySelectorAll(".mark-"+nextProps.title.termTitle.replace(' ','_'))
         Array.from(selectTerm).forEach( e => {
           e.classList.add("highlight_term")
         })
@@ -65,7 +65,8 @@ export default class Textbook extends React.Component {
   render() {
     return (
       <div className="Textbook">
-        <h1>Introduction to Computer Graphics</h1>
+        <a href="http://math.hws.edu/graphicsbook/index.html" target="_blank">  
+        <h1>Introduction to Computer Graphics</h1> </a>
         <p> Version 1.1, January 2016 </p>
         <p> Author:  David J. Eck </p>
         <div>

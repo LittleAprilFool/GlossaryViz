@@ -8,6 +8,7 @@ var ns = {}
 
 ns.create = function(el, props, data, updt) {
   this.selected = 0
+  this.totallength = 0
   var svg = d3.select(el).append('svg')
       .attr('class', 'd3')
       .attr('width', props.width)
@@ -16,7 +17,8 @@ ns.create = function(el, props, data, updt) {
         this.selected = 0
         this.resethighlight()
         updt("Glossary Viz")
-      })
+      }).append('g')
+      .attr('class', 'zoom')
   //var dispatcher = new EventEmitter()
   this.update(el, props, data, updt)
 }
@@ -33,81 +35,117 @@ ns.update = function(el, props, data, updt) {
   this._drawBrush(el, props, data, updt)
 }
 ns._drawBrush = function(el, props, data, updt) {
+  var svg = d3.select(el).selectAll('.d3')
+  var zoomele = svg.select(".zoom")
+  var x2 = d3.scaleTime().range([0, brushlength])
+  var color = d3.scaleOrdinal(d3ScaleChromatic.schemeDark2)
+  //var color = d3.scaleOrdinal(d3ScaleChromatic.schemeYlGnBu[9])
+  var brushlength = 800
+  var brushright = 348
+  var areaScale = brushlength / this.totallength
+  var area = svg.append('g')
+    .attr('class', 'area')
+    .selectAll('rect')
+    .data(data.node)
+    .enter().append('rect')
+    .attr('x', function(d){return d.x * areaScale})
+    .attr('y', function(d){return d.y + 43})
+    .attr('width', function(d){return d.width * areaScale})
+    .attr('height', function(d){return d.height * 2})
+    .style("fill", function(d){
+      return color(d.section_int)
+    })
+  function zoomed() {
+    var t = d3.event.transform
+    if(d3.event.sourceEvent.type=="brush")
+      zoomele.attr("transform", `translate(${t.x} 0) scale(${t.k} 1)`)
+  }
+  var zoom = d3.zoom()
+  .scaleExtent([1, Infinity])
+  .translateExtent([[0, 0], [brushlength, 550]])
+  .extent([[0, 0], [brushlength, 550]])
+  .on("zoom", zoomed)
+
+  zoomele.call(zoom)
+
   function brushed() {
-    console.log("hhhh")
-    // if (d3.event.sourceEvent && d3.event.sourceEvent.type === "zoom") return; // ignore brush-by-zoom
-    // var s = d3.event.selection || x2.range();
-    // x.domain(s.map(x2.invert, x2));
-    // focus.select(".area").attr("d", area);
-    // focus.select(".axis--x").call(xAxis);
-    // svg.select(".zoom").call(zoom.transform, d3.zoomIdentity
-    //     .scale(width / (s[1] - s[0]))
-    //     .translate(-s[0], 0));
+    var s = d3.event.selection || x2.range();
+    var scalevalue = brushlength / brushright
+    zoomele.call(zoom.transform, d3.zoomIdentity
+      .scale(brushright / (s[1] - s[0]))
+      .translate(-s[0] * scalevalue, 0))
   }
   var brush = d3.brushX()
-  .extent([[0, 0], [200, 200]])
+  .extent([[0, 550], [brushlength, 620]])
   .on("brush end", brushed);
-  var svg = d3.select(el).selectAll('.d3')
+  
   svg.append('g')
     .attr('class', 'brush-container') 
     .call(brush)
-    .call(brush.move, [10,200]);
+    .call(brush.move, [0,brushright]);
 }
 
 ns._predraw = function(data) {
-  var currentx = 20
-  var innergap = 20
+  var currentx = 0
+  var innergap = 1
   var outtergap = 20
-  var widthbase = 3
-  var currenty = 420
+  var widthbase = 1
+  var currenty = 520
+  var defaultheight = 15
   var node
   for (var i=0; i < data.node.length; ++i) {
     node = data.node[i]
     node.x = currentx  
     node.y = currenty
-    node.r = 5 + Math.log10(node.number) * widthbase
-    currentx = node.x + innergap
+    node.width = 5 + node.number * widthbase
+    node.height = defaultheight
+    currentx = node.x + node.width + innergap
   }
+  this.totallength = currentx - innergap
 }
 
 ns._drawList = function(el, props, data, updt) {
-  var svg = d3.select(el).selectAll('.d3')
-
-  // var color = d3.scaleOrdinal(d3ScaleChromatic.schemeBlues[9])
-  var color = d3.scaleSequential(d3ScaleChromatic.interpolateGnBu);
+  var canvas = d3.select(el).selectAll('.zoom')
+  var threshold = 8
   function textTransform(node){
-    return ("rotate(45 " + (node.x - 10) + " " + (node.y + 20) +")")
+    return ("rotate(-45 " + (node.x + 10) + " " + (node.y) +")")
   }
-  var text = svg.append('g')
+  var text = canvas.append('g')
     .attr('class', 'text-container')
     .selectAll('.text-container')
     .data(data.node)
     .enter().append('text')
-    .attr('x', function(d){return d.x - 10})
-    .attr('y', function(d){return d.y + 20})
+    .attr('x', function(d){return d.x + 10})
+    .attr('y', function(d){return d.y})
     .attr("transform", function(d,i) { return textTransform(d); })
-    .attr("font-size", "12px")
+    .attr("font-size", "14px")
     .text(function(d){return d.term})
+    .attr("visibility", function(d){
+      if (d.number > threshold)
+        return "show"
+      else
+        return "hidden"
+    })
     .style('fill', function(d){return "black"})
 }
 
 ns._drawLinks = function(el, props, data, updt) {
-  var svg = d3.select(el).selectAll('.d3')
+  var canvas = d3.select(el).selectAll('.zoom')
   
   // scale to generate radians (just for lower-half of circle)
   var radians = d3.scaleLinear()
   .range([Math.PI / 2, 3 * Math.PI / 2])
 
-  var currenty = 420
+  var currenty = 520
   // add links
-  var link = svg.append('g')
+  var link = canvas.append('g')
     .attr('class', 'link')
     .selectAll('.link')
     .data(data.link)
     .enter().append('path')
     .attr('class', function(d){return 'alink ' + d.source.term.replace(' ','_')})
     .attr('d', function(d){
-      var radius = Math.abs(d.target.x - d.source.x) / 2
+      var radius = Math.abs(d.target.x - d.source.x - d.source.width / 2 + d.target.width / 2) / 2
       var arc = d3.arc()
         .innerRadius(radius)
         .outerRadius(radius)
@@ -117,19 +155,19 @@ ns._drawLinks = function(el, props, data, updt) {
     })
     .attr('stroke',function(d) {
       if (d.target.x > props.width)
-        return "#eee"
+        return "#ddd"
       else
-        return "#eee"
+        return "#ddd"
     })
+    .attr('opacity', 0.5)
     .attr('stroke-width', function(d){
-      if (d.target.x > props.width)
-        return 1
-      else
-        return 4
+      var mincount = Math.min(d.target.number, d.source.number)
+      var param = 1
+      return mincount * param
     })
     .attr('transform', function(d) {
-      var radius = Math.abs(d.target.x - d.source.x) / 2
-      var xshift = d.source.x + radius
+      var radius = Math.abs(d.target.x - d.source.x - d.source.width / 2 + d.target.width / 2) / 2
+      var xshift = d.source.x + d.source.width / 2 + radius
       var yshift = currenty
       return 'translate(' + xshift + ',' + yshift + ')'
     })
@@ -152,17 +190,19 @@ ns._drawLinks = function(el, props, data, updt) {
 }
 
 ns._drawPoints = function (el, props, data, updt) {
-  var svg = d3.select(el).selectAll('.d3')
+  var canvas = d3.select(el).selectAll('.zoom')
 
-  var color = d3.scaleOrdinal(d3ScaleChromatic.schemeSet2)
-  var node = svg.append('g')
+  var color = d3.scaleOrdinal(d3ScaleChromatic.schemeDark2)
+  //var color = d3.scaleOrdinal(d3ScaleChromatic.schemeYlGnBu[9])
+  var node = canvas.append('g')
     .attr('class', 'nodes')
-    .selectAll('circle')
+    .selectAll('rect')
     .data(data.node)
-    .enter().append('circle')
-    .attr('cx', function(d){return d.x})
-    .attr('cy', function(d){return d.y})
-    .attr('r', function(d){return d.r})
+    .enter().append('rect')
+    .attr('x', function(d){return d.x})
+    .attr('y', function(d){return d.y})
+    .attr('width', function(d){return d.width})
+    .attr('height', function(d){return d.height})
     .attr('id', function(d){return d.chapter_int})
     .attr('class', function(d){return 'blockterm '+ d.term.replace(' ', '_')})
     .on("mouseover", (d)=>{
@@ -192,17 +232,18 @@ ns._drawPoints = function (el, props, data, updt) {
 }
 
 ns.highlight = function (term) {
-  var allterm = d3.selectAll('.blockterm').style('fill', '#eee')
+  // var allterm = d3.selectAll('.blockterm').style('fill', '#ddd')
   var related = d3.selectAll('.blockterm').filter('.'+term.replace(' ', '_')).style('fill', 'orange')
   var relatedlink = d3.selectAll('.alink').filter('.'+ term.replace(' ', '_')).style('stroke', 'orange')
 }
 
 ns.resethighlight = function () {
-  var color = d3.scaleOrdinal(d3ScaleChromatic.schemeSet2)
+  var color = d3.scaleOrdinal(d3ScaleChromatic.schemeDark2)
+  // var color = d3.scaleOrdinal(d3ScaleChromatic.schemeYlGnBu[9])
   var allterm = d3.selectAll('.blockterm').style('fill', function(d){
     return color(d.section_int)
   })
-  var relatedlink = d3.selectAll('.alink').style('stroke', '#eee')
+  var relatedlink = d3.selectAll('.alink').style('stroke', '#ddd')
 }
 
 ns.matchhighlight = function (el, term) {
@@ -212,13 +253,19 @@ ns.matchhighlight = function (el, term) {
   }
   else {
     this.selected = 2
-    var allterm = d3.selectAll('.blockterm').style('fill', '#eee')
-    var test = d3.selectAll('.blockterm')
+    var tt = d3.selectAll('.blockterm')
     .filter(function(d) { 
       const reg = new RegExp('^' + term)
       return (reg.test(d.term))
     })
     .style('fill', 'yellow')
+    
+    var ll = d3.selectAll('.alink')
+    .filter(function(d) { 
+      const reg = new RegExp('^' + term)
+      return (reg.test(d.source.term))
+    })
+    .style('stroke', 'yellow')
   }
 }
 

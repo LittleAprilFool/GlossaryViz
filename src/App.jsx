@@ -45,7 +45,7 @@ export default class App extends React.Component {
         <SearchBox onChange={this.changeSearch} />
         <Textbook title = {this.state} onChange={this.changeTerm}/>
         <Terminology title = {this.state} />
-        <Arc data = {this.props.data} width = '810' height = '2050' onChange={this.changeTerm} title={this.state}/>
+        <Arc data = {this.props.data} width = '800' height = '600' onChange={this.changeTerm} title={this.state}/>
       </div>
     )
   }
