@@ -40,8 +40,8 @@ ns._drawBrush = function(el, props, data, updt) {
   var x2 = d3.scaleTime().range([0, brushlength])
   var color = d3.scaleOrdinal(d3ScaleChromatic.schemeDark2)
   //var color = d3.scaleOrdinal(d3ScaleChromatic.schemeYlGnBu[9])
-  var brushlength = 800
-  var brushright = 348
+  var brushlength = props.width
+  var brushright = 0.435 * props.width
   var areaScale = brushlength / this.totallength
   var area = svg.append('g')
     .attr('class', 'area')
