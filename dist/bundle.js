@@ -61,7 +61,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "c48bcd43138929dbf1a7"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "ee8fe8e9d973e92806ed"; // eslint-disable-line no-unused-vars
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule; // eslint-disable-line no-unused-vars
@@ -28268,6 +28268,7 @@ var App = function (_React$Component) {
     _this.changeSearch = _this.changeSearch.bind(_this);
     _this.handleClick = _this.handleClick.bind(_this);
     _this.width = window.innerWidth * 0.6;
+    _this.height = window.innerHeight - 120;
     return _this;
   }
 
@@ -28313,7 +28314,7 @@ var App = function (_React$Component) {
         _react2.default.createElement(_Searchbox2.default, { onChange: this.changeSearch }),
         _react2.default.createElement(_Textbook2.default, { title: this.state, onChange: this.changeTerm }),
         _react2.default.createElement(_Terminology2.default, { title: this.state }),
-        _react2.default.createElement(_Arc2.default, { data: this.props.data, width: this.width, height: '600', onChange: this.changeTerm, title: this.state })
+        _react2.default.createElement(_Arc2.default, { data: this.props.data, width: this.width, height: this.height, onChange: this.changeTerm, title: this.state })
       );
     }
   }]);
@@ -28448,7 +28449,7 @@ ns.update = function (el, props, data, updt) {
     d.source = isNaN(d.source) ? d.source : data.node[d.source];
     d.target = isNaN(d.target) ? d.target : data.node[d.target];
   });
-  this._predraw(data);
+  this._predraw(props, data);
   this._drawLinks(el, props, data, updt);
   this._drawPoints(el, props, data, updt);
   this._drawList(el, props, data, updt);
@@ -28466,19 +28467,17 @@ ns._drawBrush = function (el, props, data, updt) {
   var area = svg.append('g').attr('class', 'area').selectAll('rect').data(data.node).enter().append('rect').attr('x', function (d) {
     return d.x * areaScale;
   }).attr('y', function (d) {
-    return d.y + 43;
+    return props.height - 40;
   }).attr('width', function (d) {
     return d.width * areaScale;
-  }).attr('height', function (d) {
-    return d.height * 2;
-  }).style("fill", function (d) {
+  }).attr('height', 30).style("fill", function (d) {
     return color(d.section_int);
   });
   function zoomed() {
     var t = d3.event.transform;
     if (d3.event.sourceEvent.type == "brush") zoomele.attr("transform", 'translate(' + t.x + ' 0) scale(' + t.k + ' 1)');
   }
-  var zoom = d3.zoom().scaleExtent([1, Infinity]).translateExtent([[0, 0], [brushlength, 550]]).extent([[0, 0], [brushlength, 550]]).on("zoom", zoomed);
+  var zoom = d3.zoom().scaleExtent([1, Infinity]).translateExtent([[0, 0], [brushlength, props.height - 50]]).extent([[0, 0], [brushlength, props.height - 50]]).on("zoom", zoomed);
 
   zoomele.call(zoom);
 
@@ -28487,17 +28486,17 @@ ns._drawBrush = function (el, props, data, updt) {
     var scalevalue = brushlength / brushright;
     zoomele.call(zoom.transform, d3.zoomIdentity.scale(brushright / (s[1] - s[0])).translate(-s[0] * scalevalue, 0));
   }
-  var brush = d3.brushX().extent([[0, 550], [brushlength, 620]]).on("brush end", brushed);
+  var brush = d3.brushX().extent([[0, props.height - 50], [brushlength, props.height]]).on("brush end", brushed);
 
   svg.append('g').attr('class', 'brush-container').call(brush).call(brush.move, [0, brushright]);
 };
 
-ns._predraw = function (data) {
+ns._predraw = function (props, data) {
   var currentx = 0;
   var innergap = 1;
   var outtergap = 20;
   var widthbase = 1;
-  var currenty = 520;
+  var currenty = props.height - 80;
   var defaultheight = 15;
   var node;
   for (var i = 0; i < data.node.length; ++i) {
@@ -28540,7 +28539,7 @@ ns._drawLinks = function (el, props, data, updt) {
   // scale to generate radians (just for lower-half of circle)
   var radians = d3.scaleLinear().range([Math.PI / 2, 3 * Math.PI / 2]);
 
-  var currenty = 520;
+  var currenty = props.height - 80;
   // add links
   var link = canvas.append('g').attr('class', 'link').selectAll('.link').data(data.link).enter().append('path').attr('class', function (d) {
     return 'alink ' + d.source.term.replace(' ', '_');

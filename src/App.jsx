@@ -16,6 +16,7 @@ export default class App extends React.Component {
     this.changeSearch = this.changeSearch.bind(this)
     this.handleClick = this.handleClick.bind(this)
     this.width = window.innerWidth * 0.6
+    this.height = window.innerHeight - 120
   }
   changeTerm(term) {
     this.setState({
@@ -46,7 +47,7 @@ export default class App extends React.Component {
         <SearchBox onChange={this.changeSearch} />
         <Textbook title = {this.state} onChange={this.changeTerm}/>
         <Terminology title = {this.state} />
-        <Arc data = {this.props.data} width ={this.width} height = '600' onChange={this.changeTerm} title={this.state}/>
+        <Arc data = {this.props.data} width ={this.width} height = {this.height} onChange={this.changeTerm} title={this.state}/>
       </div>
     )
   }

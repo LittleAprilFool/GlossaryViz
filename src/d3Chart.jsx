@@ -28,7 +28,7 @@ ns.update = function(el, props, data, updt) {
     d.source = isNaN(d.source) ? d.source : data.node[d.source]
     d.target = isNaN(d.target) ? d.target : data.node[d.target]
   })
-  this._predraw(data)
+  this._predraw(props, data)
   this._drawLinks(el, props, data, updt)
   this._drawPoints(el, props, data, updt)
   this._drawList(el, props, data, updt)
@@ -49,9 +49,9 @@ ns._drawBrush = function(el, props, data, updt) {
     .data(data.node)
     .enter().append('rect')
     .attr('x', function(d){return d.x * areaScale})
-    .attr('y', function(d){return d.y + 43})
+    .attr('y', function(d){return props.height - 40})
     .attr('width', function(d){return d.width * areaScale})
-    .attr('height', function(d){return d.height * 2})
+    .attr('height', 30)
     .style("fill", function(d){
       return color(d.section_int)
     })
@@ -62,8 +62,8 @@ ns._drawBrush = function(el, props, data, updt) {
   }
   var zoom = d3.zoom()
   .scaleExtent([1, Infinity])
-  .translateExtent([[0, 0], [brushlength, 550]])
-  .extent([[0, 0], [brushlength, 550]])
+  .translateExtent([[0, 0], [brushlength, props.height - 50]])
+  .extent([[0, 0], [brushlength, props.height - 50]])
   .on("zoom", zoomed)
 
   zoomele.call(zoom)
@@ -76,7 +76,7 @@ ns._drawBrush = function(el, props, data, updt) {
       .translate(-s[0] * scalevalue, 0))
   }
   var brush = d3.brushX()
-  .extent([[0, 550], [brushlength, 620]])
+  .extent([[0, props.height - 50], [brushlength, props.height]])
   .on("brush end", brushed);
   
   svg.append('g')
@@ -85,12 +85,12 @@ ns._drawBrush = function(el, props, data, updt) {
     .call(brush.move, [0,brushright]);
 }
 
-ns._predraw = function(data) {
+ns._predraw = function(props, data) {
   var currentx = 0
   var innergap = 1
   var outtergap = 20
   var widthbase = 1
-  var currenty = 520
+  var currenty = props.height - 80
   var defaultheight = 15
   var node
   for (var i=0; i < data.node.length; ++i) {
@@ -136,7 +136,7 @@ ns._drawLinks = function(el, props, data, updt) {
   var radians = d3.scaleLinear()
   .range([Math.PI / 2, 3 * Math.PI / 2])
 
-  var currenty = 520
+  var currenty = props.height - 80
   // add links
   var link = canvas.append('g')
     .attr('class', 'link')
