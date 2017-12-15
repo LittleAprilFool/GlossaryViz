@@ -113,14 +113,17 @@ a{
 }
 
 .menu-container {
-  display: none;
+  position: fixed;
+  left: -30%;
   opacity: 0.9;
+  width: 30%;
+  margin-left:6px;
   height: 100vh;
   background: white;
   display: flex;
   justify-content:center;
   align-items: center;
-  transition: all .4s linear; 
+  transition: all .4s ease-in-out;
 }
 
 .menu-icon {

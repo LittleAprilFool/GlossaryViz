@@ -33,12 +33,12 @@ export default class Textbook extends React.Component {
     })
     var menu = document.querySelector('.menu-container')
     if (menu!= null)
-      menu.style.display= "none"
+      menu.style.left= "-30%"
   }
   jumpChapter(id){
     var menu = document.querySelector('.menu-container')
     if (menu!= null)
-      menu.style.display= "none"
+      menu.style.left= "-30%"
     var chapter = document.querySelector('.'+id.replace(' ', '_'))
     if (chapter!= null)
       chapter.scrollIntoView()
@@ -47,7 +47,7 @@ export default class Textbook extends React.Component {
     console.log("???")
     var menu = document.querySelector('.menu-container')
     if (menu!= null)
-      menu.style.display = "flex"
+      menu.style.left = "0%"
   }
   handleClick(e) {
     e.stopPropagation()

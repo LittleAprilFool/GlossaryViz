@@ -61,7 +61,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "c1fb59ef4ca935a4033a"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "087cf2c342f80c1efb19"; // eslint-disable-line no-unused-vars
 /******/ 	var hotRequestTimeout = 10000;
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentChildModule; // eslint-disable-line no-unused-vars
@@ -43894,13 +43894,13 @@ var Textbook = function (_React$Component) {
         e.onclick = _this2.handleClick;
       });
       var menu = document.querySelector('.menu-container');
-      if (menu != null) menu.style.display = "none";
+      if (menu != null) menu.style.left = "-30%";
     }
   }, {
     key: 'jumpChapter',
     value: function jumpChapter(id) {
       var menu = document.querySelector('.menu-container');
-      if (menu != null) menu.style.display = "none";
+      if (menu != null) menu.style.left = "-30%";
       var chapter = document.querySelector('.' + id.replace(' ', '_'));
       if (chapter != null) chapter.scrollIntoView();
     }
@@ -43909,7 +43909,7 @@ var Textbook = function (_React$Component) {
     value: function showMenu() {
       console.log("???");
       var menu = document.querySelector('.menu-container');
-      if (menu != null) menu.style.display = "flex";
+      if (menu != null) menu.style.left = "0%";
     }
   }, {
     key: 'handleClick',
