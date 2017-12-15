@@ -41,8 +41,8 @@ ns._drawBrush = function(el, props, data, updt) {
   var color = d3.scaleOrdinal(d3ScaleChromatic.schemeDark2)
   //var color = d3.scaleOrdinal(d3ScaleChromatic.schemeYlGnBu[9])
   var brushlength = props.width
-  var brushright = 0.435 * props.width
   var areaScale = brushlength / this.totallength
+  var brushright = areaScale * props.width
   var area = svg.append('g')
     .attr('class', 'area')
     .selectAll('rect')
@@ -53,7 +53,7 @@ ns._drawBrush = function(el, props, data, updt) {
     .attr('width', function(d){return d.width * areaScale})
     .attr('height', 30)
     .style("fill", function(d){
-      return color(d.section_int)
+      return color(d.chapter_int)
     })
   function zoomed() {
     var t = d3.event.transform
@@ -89,7 +89,7 @@ ns._predraw = function(props, data) {
   var currentx = 0
   var innergap = 1
   var outtergap = 20
-  var widthbase = 1
+  var widthbase = 0.5
   var currenty = props.height - 80
   var defaultheight = 15
   var node
@@ -162,7 +162,7 @@ ns._drawLinks = function(el, props, data, updt) {
     .attr('opacity', 0.5)
     .attr('stroke-width', function(d){
       var mincount = Math.min(d.target.number, d.source.number)
-      var param = 1
+      var param = 0.5
       return mincount * param
     })
     .attr('transform', function(d) {
@@ -227,7 +227,7 @@ ns._drawPoints = function (el, props, data, updt) {
       d3.event.stopPropagation();
     })
     .style("fill", function(d){
-      return color(d.section_int)
+      return color(d.chapter_int)
     })
 }
 
@@ -241,7 +241,7 @@ ns.resethighlight = function () {
   var color = d3.scaleOrdinal(d3ScaleChromatic.schemeDark2)
   // var color = d3.scaleOrdinal(d3ScaleChromatic.schemeYlGnBu[9])
   var allterm = d3.selectAll('.blockterm').style('fill', function(d){
-    return color(d.section_int)
+    return color(d.chapter_int)
   })
   var relatedlink = d3.selectAll('.alink').style('stroke', '#ddd')
 }

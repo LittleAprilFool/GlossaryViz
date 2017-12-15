@@ -9,13 +9,13 @@ def updateChapter(node):
 
     section["id"] = float(section["section_id"].split(' ')[1])
 
-    if int(section["chapter_id"].split(' ')[1]) == 2 :
-      newChapter.append(section)
+    # if int(section["chapter_id"].split(' ')[1]) == 2 :
+    newChapter.append(section)
   
   sorted(newChapter, key=lambda k: k.get('id', 0), reverse=True)
 
 def write_file():
-  obj = open('chapter22.json', 'wb')
+  obj = open('chapter-full.json', 'wb')
   json.dump(newChapter, obj)
   obj.close
 
